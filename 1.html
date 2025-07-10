@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>THIS IS NOT A SAFE PLACE</title>
+    <style>
+      @font-face {
+        font-family: "PixelFont";
+        src: local("Courier New"), monospace;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: black;
+        color: #ff0044;
+        font-family: "PixelFont", monospace;
+        font-size: 14px;
+        line-height: 1.1;
+        letter-spacing: 0.3em;
+        overflow: hidden;
+        user-select: none;
+        cursor: none;
+        filter: contrast(180%) brightness(50%) saturate(3) hue-rotate(180deg);
+        position: relative;
+      }
+
+      /* komplett verrücktes Durcheinander-Layout */
+      #bloodOverlay,
+      #scanlines,
+      #drip,
+      h1,
+      #mainText,
+      #glitchText {
+        position: absolute;
+        pointer-events: none;
+        mix-blend-mode: difference;
+        filter: drop-shadow(0 0 10px #ff0000);
+        user-select: none;
+      }
+
+      #bloodOverlay {
+        top: 30vh;
+        left: 20vw;
+        width: 150vw;
+        height: 150vh;
+        background: url("https://i.imgur.com/9gDmJXO.png") no-repeat center,
+          radial-gradient(circle at center, #7f0000dd, transparent 70%);
+        background-size: 300px 300px;
+        opacity: 0.5;
+        animation: bloodPulse 4s ease-in-out infinite alternate;
+        filter: blur(4px) contrast(3) brightness(1.4);
+        mix-blend-mode: screen;
+        transform: rotate(25deg) skew(10deg, 15deg);
+        z-index: 10000;
+      }
+
+      #scanlines {
+        top: -40vh;
+        left: -40vw;
+        width: 250vw;
+        height: 250vh;
+        background: repeating-linear-gradient(
+          30deg,
+          rgba(255, 0, 0, 0.12),
+          rgba(255, 0, 0, 0.12) 2px,
+          transparent 4px,
+          transparent 6px
+        );
+        mix-blend-mode: difference;
+        animation: scanlineFlicker 0.8s infinite;
+        filter: drop-shadow(0 0 15px #ff3300);
+        transform: skewX(-20deg);
+        opacity: 0.15;
+        z-index: 15000;
+      }
+
+      #drip {
+        width: 40px;
+        height: 90px;
+        bottom: 10px;
+        left: 50%;
+        margin-left: -20px;
+        background: radial-gradient(
+          circle at 50% 20%,
+          #ff0000dd 85%,
+          transparent 100%
+        );
+        border-radius: 50% 50% 50% 50% / 65% 65% 40% 40%;
+        animation: dripFall 1.4s infinite ease-in-out alternate;
+        box-shadow: 0 10px 12px #880000cc inset, 0 0 15px 6px #bb0000cc;
+        filter: drop-shadow(0 0 10px #ff0000cc);
+        transform-origin: center;
+        z-index: 11000;
+        pointer-events: none;
+      }
+
+      h1 {
+        font-size: 80px;
+        color: #ff00ff;
+        top: 10vh;
+        left: 50%;
+        transform-origin: center center;
+        transform: translateX(-50%) rotate(-5deg) skew(15deg, -10deg);
+        text-shadow: 5px 0 #ff0000, -5px 0 #aa00aa, 8px 8px 25px #ff00ffcc,
+          -8px -8px 25px #ff0000cc;
+        letter-spacing: 0.6em;
+        text-align: center;
+        user-select: none;
+        animation: jitterMadness 0.05s infinite alternate;
+        z-index: 12000;
+        position: absolute;
+      }
+
+      #mainText {
+        top: 45vh;
+        left: 10vw;
+        width: 70vw;
+        max-width: none;
+        padding: 2rem;
+        background: rgba(50, 0, 0, 0.8);
+        border: 6px dotted #ff00ff;
+        box-shadow: inset 0 0 40px 10px #ff00ffaa, 0 0 40px 15px #ff00ff55;
+        color: #ff44ff;
+        font-family: monospace;
+        font-size: 22px;
+        line-height: 1.6;
+        letter-spacing: 0.22em;
+        text-shadow: 0 0 15px #ff00ffdd, 1px 1px 10px #aa00aaee;
+        user-select: none;
+        white-space: pre-wrap;
+        filter: drop-shadow(0 0 7px #ff00ffdd);
+        animation: textPulseMadness 4s ease-in-out infinite alternate;
+        transform: rotate(12deg) skew(-5deg, 7deg);
+        mix-blend-mode: difference;
+        position: absolute;
+        z-index: 11500;
+      }
+
+      #glitchText {
+        top: 80vh;
+        left: 60vw;
+        font-weight: 900;
+        font-size: 40px;
+        color: #00ff00;
+        letter-spacing: 0.5em;
+        user-select: none;
+        text-transform: uppercase;
+        text-shadow: 5px 0 #00ff00, -5px 0 #006600, 10px 0 #00ff44,
+          -10px 0 #004400;
+        animation: glitchGlitchMadness 1.4s infinite;
+        filter: drop-shadow(0 0 15px #00ff00);
+        mix-blend-mode: screen;
+        z-index: 13000;
+        position: absolute;
+      }
+
+      /* Animations */
+      @keyframes bloodPulse {
+        0%,
+        100% {
+          opacity: 0.5;
+          filter: blur(4px) contrast(3) brightness(1.4);
+          transform: rotate(25deg) skew(10deg, 15deg);
+        }
+        50% {
+          opacity: 0.9;
+          filter: blur(6px) contrast(5) brightness(2);
+          transform: rotate(50deg) skew(-15deg, 20deg);
+        }
+      }
+
+      @keyframes scanlineFlicker {
+        0%,
+        100% {
+          opacity: 0.12;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      @keyframes dripFall {
+        0% {
+          transform: translateY(0) scaleY(1) skewX(0deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 10px #ff00ffcc);
+        }
+        50% {
+          transform: translateY(100px) scaleY(0.5) skewX(20deg);
+          opacity: 0.8;
+          filter: drop-shadow(0 0 30px #ff00ffdd);
+        }
+        100% {
+          transform: translateY(180px) scaleY(0.2) skewX(-25deg);
+          opacity: 0;
+          filter: drop-shadow(0 0 50px #ff00ffee);
+        }
+      }
+
+      @keyframes jitterMadness {
+        0% {
+          transform: translate(0) rotate(-5deg) skew(10deg, 5deg);
+          text-shadow: 5px 0 #ff00ff, -5px 0 #aa00aa;
+        }
+        25% {
+          transform: translate(4px, -3px) rotate(7deg) skew(-5deg, 15deg);
+          text-shadow: 10px 10px 30px #ff00ffcc;
+        }
+        50% {
+          transform: translate(-4px, 3px) rotate(-8deg) skew(10deg, -10deg);
+          text-shadow: 0 0 50px #ff00ffaa;
+        }
+        75% {
+          transform: translate(3px, 4px) rotate(4deg) skew(-15deg, 5deg);
+          text-shadow: 10px -10px 20px #ff00ffbb;
+        }
+        100% {
+          transform: translate(0) rotate(-5deg) skew(10deg, 5deg);
+          text-shadow: 5px 0 #ff00ff, -5px 0 #aa00aa;
+        }
+      }
+
+      @keyframes textPulseMadness {
+        0%,
+        100% {
+          text-shadow: 0 0 20px #ff00ffcc, 3px 3px 15px #aa00aadd;
+          color: #ff00ff;
+        }
+        50% {
+          text-shadow: 0 0 40px #ff44ffee, 5px 5px 30px #dd00ddff;
+          color: #ff88ff;
+        }
+      }
+
+      @keyframes glitchGlitchMadness {
+        0% {
+          text-shadow: 5px 0 #00ff00, -5px 0 #006600;
+          transform: translate(0, 0) skew(0deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 15px #00ff00);
+        }
+        20% {
+          text-shadow: 10px 0 #00ff44, -10px 0 #004400;
+          transform: translate(-10px, 8px) skew(10deg);
+          opacity: 0.5;
+          filter: drop-shadow(0 0 35px #00ff55);
+        }
+        40% {
+          text-shadow: 5px 0 #00ff00, -5px 0 #006600;
+          transform: translate(15px, -10px) skew(-15deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 15px #00ff00);
+        }
+        60% {
+          text-shadow: 8px 0 #00ff88, -8px 0 #005500;
+          transform: translate(-5px, 5px) skew(7deg);
+          opacity: 0.6;
+          filter: drop-shadow(0 0 25px #00ff77);
+        }
+        80% {
+          text-shadow: 5px 0 #00ff00, -5px 0 #006600;
+          transform: translate(0, 0) skew(0deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 15px #00ff00);
+        }
+        100% {
+          text-shadow: 10px 0 #00ff44, -10px 0 #004400;
+          transform: translate(0, 0) skew(0deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 15px #00ff00);
+        }
+      }
+
+      /* Additional random moving chaos for body */
+      @keyframes bodyShake {
+        0% {
+          transform: translate(0, 0) rotate(0deg) skew(0deg, 0deg);
+          filter: hue-rotate(0deg);
+        }
+        20% {
+          transform: translate(8px, -8px) rotate(-5deg) skew(5deg, 5deg);
+          filter: hue-rotate(30deg);
+        }
+        40% {
+          transform: translate(-7px, 6px) rotate(8deg) skew(-7deg, -6deg);
+          filter: hue-rotate(90deg);
+        }
+        60% {
+          transform: translate(5px, -5px) rotate(-8deg) skew(10deg, 10deg);
+          filter: hue-rotate(150deg);
+        }
+        80% {
+          transform: translate(-5px, 8px) rotate(4deg) skew(-8deg, -8deg);
+          filter: hue-rotate(210deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(0deg) skew(0deg, 0deg);
+          filter: hue-rotate(360deg);
+        }
+      }
+
+      body {
+        animation: bodyShake 12s infinite ease-in-out alternate;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bloodOverlay"></div>
+    <div id="scanlines"></div>
+    <div id="drip"></div>
+
+    <h1>TH!$ !$ N0T @ $@F3 PL@C3</h1>
+
+    <div id="mainText" tabindex="0" aria-label="Disturbing message">
+      please help me out
+    </div>
+
+    <div id="glitchText" aria-hidden="true">3RR0R 666: $@N1TY N0T F0UND</div>
+
+    <audio id="creepySound" loop autoplay>
+      <source
+        src="https://actions.google.com/sounds/v1/ambiences/creepy_crawling.ogg"
+        type="audio/ogg"
+      />
+    </audio>
+
+    <script>
+      setInterval(() => {
+        const overlay = document.getElementById("bloodOverlay");
+        overlay.style.opacity = 0.3 + Math.random() * 0.7;
+        overlay.style.transform = `rotate(${Math.random() * 60 - 30}deg) skew(${
+          Math.random() * 30 - 15
+        }deg, ${Math.random() * 30 - 15}deg) scale(${1 + Math.random() * 0.4})`;
+      }, 200);
+
+      setInterval(() => {
+        const scan = document.getElementById("scanlines");
+        scan.style.opacity = 0.03 + Math.random() * 0.15;
+        scan.style.left = `${Math.random() * 50 - 25}vw`;
+        scan.style.top = `${Math.random() * 50 - 25}vh`;
+        scan.style.transform = `skewX(${Math.random() * 50 - 25}deg)`;
+      }, 100);
+
+
+      setInterval(() => {
+        const drip = document.getElementById("drip");
+        drip.style.left = `calc(50% + ${Math.sin(Date.now() / 200) * 30}px)`;
+        drip.style.opacity = 0.6 + Math.abs(Math.sin(Date.now() / 150)) * 0.4;
+        drip.style.transform = `translateY(${
+          Math.sin(Date.now() / 300) * 40
+        }px) scaleY(${0.3 + Math.abs(Math.cos(Date.now() / 200))}) skewX(${
+          Math.sin(Date.now() / 250) * 20
+        }deg)`;
+      }, 50);
+
+      const matrixChars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()+=[]{}|<>?/\\";
+      const originalTitle = document.title;
+      let length = originalTitle.length;
+
+      function getRandomChar() {
+        return matrixChars.charAt(
+          Math.floor(Math.random() * matrixChars.length)
+        );
+      }
+
+      function hackerTitle(frame) {
+        let result = "";
+        for (let i = 0; i < length; i++) {
+          if (Math.random() < 0.7) {
+            result += getRandomChar();
+          } else {
+            const idx = (i + frame) % length;
+            result += originalTitle.charAt(idx);
+          }
+        }
+        return result;
+      }
+
+      let frame = 0;
+      setInterval(() => {
+        document.title = hackerTitle(frame);
+        frame = (frame + 1) % length;
+      }, 70);
+
+      const glitchText = document.getElementById("glitchText");
+      setInterval(() => {
+        glitchText.style.transform = `translate(${
+          (Math.random() - 0.5) * 20
+        }px, ${(Math.random() - 0.5) * 20}px) skew(${
+          Math.random() * 30 - 15
+        }deg, ${Math.random() * 30 - 15}deg) rotate(${
+          Math.random() * 20 - 10
+        }deg)`;
+        glitchText.style.opacity = 0.6 + Math.random() * 0.4;
+      }, 100);
+
+      // Randomly move main text slightly
+      const mainText = document.getElementById("mainText");
+      setInterval(() => {
+        mainText.style.transform = `rotate(${
+          10 + Math.sin(Date.now() / 500) * 10
+        }deg) skew(${Math.sin(Date.now() / 300) * 5}deg, ${
+          Math.cos(Date.now() / 300) * 5
+        }deg) translate(${Math.sin(Date.now() / 400) * 10}px, ${
+          Math.cos(Date.now() / 400) * 10
+        }px)`;
+      }, 80);
+
+      setInterval(() => {
+        document.body.style.filter = `contrast(${
+          1.4 + Math.random() * 0.8
+        }) brightness(${0.4 + Math.random() * 0.6}) saturate(${
+          2 + Math.random() * 3
+        }) hue-rotate(${Math.random() * 360}deg)`;
+      }, 200);
+
+      setInterval(() => {
+        const r = 150 + Math.floor(Math.random() * 105);
+        const g = Math.floor(Math.random() * 50);
+        const b = 150 + Math.floor(Math.random() * 105);
+        mainText.style.color = `rgb(${r},${g},${b})`;
+        mainText.style.textShadow = `0 0 20px rgb(${r},${g},${b})`;
+      }, 400);
+    </script>
+  </body>
+</html>
